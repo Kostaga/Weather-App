@@ -12,8 +12,6 @@ import countries from './countries';
 
 function App() {
 
-  const api_key = "6cfc8e5361d34c22b0a170921232408";
-
   const [weatherData, setWeatherData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchField, setSearchField] = useState('');
@@ -21,14 +19,19 @@ function App() {
 
   const callAPI = (country) => {
 
-    fetch(`https://api.weatherapi.com/v1/current.json?key=${api_key}&q=${country}&aqi=no`)
-
-      .then(response => response.json())
-      .then(data => {
-        setWeatherData(data);
-        setIsLoading(false);
-      })
-      .catch(err => console.log("Error",err))
+    fetch(`http://localhost:5000/search-location`, {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({country})
+    })
+    .then(response => response.json())
+    .then(data => {
+      setWeatherData(data.data); 
+      setIsLoading(false);
+    })
+    .catch(err => console.log("Error", err));
   }
 
   useEffect(() => {
@@ -40,6 +43,7 @@ function App() {
   if (isLoading) {
     return <h1>Loading...</h1>
   }
+
 
   const onChange = (event) => {
     const {value} = event.target;
