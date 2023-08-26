@@ -3,11 +3,13 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import './App.css';
-import { TextField, InputAdornment } from '@mui/material';
+import { TextField, InputAdornment, Select } from '@mui/material';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import Autocomplete from '@mui/material/Autocomplete';
 import React, {useEffect,useState} from 'react';
 import countries from './countries';
+import FormControl from '@mui/material';
+import InputLabel from '@mui/material';
 
 
 function App() {
@@ -15,7 +17,21 @@ function App() {
   const [weatherData, setWeatherData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchField, setSearchField] = useState('');
+  const [history, setHistory] = useState([]);
 
+
+
+  const callHistory = () => {
+    fetch('http://localhost:5000/history', {
+      method: 'get',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+
+    })
+    .then(response => response.json())
+    .then(data => setHistory(data))
+  }
 
   const callAPI = (country) => {
 
@@ -32,11 +48,14 @@ function App() {
       setIsLoading(false);
     })
     .catch(err => console.log("Error", err));
+
+    callHistory();
   }
 
   useEffect(() => {
       callAPI('London');
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   },[]);
 
 
@@ -63,6 +82,8 @@ function App() {
     <div className="App">
       <main className='main'>
         <h2 className='title'>Weather Application</h2>
+
+        
 
         <div className='autocomplete'>
 
