@@ -1,9 +1,9 @@
-# Weather-App
+![image](https://github.com/Kostaga/Weather-App/assets/59094550/8c7e31d2-cf4c-4b5d-863e-3736fea1fec8)# Weather-App
 A simple weather application made using the Weather API and Material UI with React
 
 This is a simple full stack web application thatuses React, Node.js, Express, and PostgreSQL. The user can select or type any country and the Weather API provides data about that country. Users can also see their history, select countries and clear the history.
 
-Link: [https://full-stack-face-detection-app.onrender.com](https://benevolent-profiterole-c442fc.netlify.app)
+Link: [https://benevolent-profiterole-c442fc.netlify.app](https://benevolent-profiterole-c442fc.netlify.app)
 
 Technologies Used
 
