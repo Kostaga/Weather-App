@@ -124,3 +124,15 @@ input {
   justify-content: center;
   gap: 1rem;
 }
+
+.historyField {
+  font-size: 20px !important;
+  color: white !important;
+}
+
+.historyContainer {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  width: 100%;
+}

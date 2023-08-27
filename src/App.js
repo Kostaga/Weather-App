@@ -3,14 +3,13 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import './App.css';
-import { TextField, InputAdornment, Select } from '@mui/material';
-import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
-import Autocomplete from '@mui/material/Autocomplete';
+import  {MenuItem } from '@mui/material';
 import React, {useEffect,useState} from 'react';
 import countries from './countries';
-import FormControl from '@mui/material';
-import InputLabel from '@mui/material';
-
+import History from './components/History';
+import Info from './components/Info';
+import Data from './components/Data';
+import AutocompleteContainer from './components/Autocomplete';
 
 function App() {
 
@@ -18,11 +17,12 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchField, setSearchField] = useState('');
   const [history, setHistory] = useState([]);
+  const [selectedCountry, setSelectedCountry] = useState('London');
 
 
 
   const callHistory = () => {
-    fetch('http://localhost:5000/history', {
+    fetch('https://weather-app-uzgj.onrender.com/history', {
       method: 'get',
       headers: {
         'Content-Type': 'application/json'
@@ -34,8 +34,9 @@ function App() {
   }
 
   const callAPI = (country) => {
-
-    fetch(`http://localhost:5000/search-location`, {
+    setIsLoading(true);
+    setWeatherData([]);
+    fetch(`https://weather-app-uzgj.onrender.com/search-location`, {
       method: 'post',
       headers: {
         'Content-Type': 'application/json'
@@ -45,15 +46,18 @@ function App() {
     .then(response => response.json())
     .then(data => {
       setWeatherData(data.data); 
+      callHistory();
       setIsLoading(false);
+      
     })
     .catch(err => console.log("Error", err));
 
-    callHistory();
+
   }
 
+
   useEffect(() => {
-      callAPI('London');
+     callAPI('London');
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[]);
@@ -69,6 +73,12 @@ function App() {
     setSearchField(value);
   }
 
+  const onHistoryChange = (event) => {
+    setSelectedCountry(event.target.value);
+    callAPI(event.target.value);
+    
+  };
+
   const onSubmit = () => {
     const country = searchField.toLowerCase();
 
@@ -76,6 +86,25 @@ function App() {
       return callAPI(country);
   }
 
+  const clearHistory = () => {
+    fetch(`https://weather-app-uzgj.onrender.com/clear-history`, {
+      method: 'delete',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    }).then(setSelectedCountry('')).then(setHistory([]))
+    .catch(err => console.log("Error", err));
+  }
+
+
+  const menuItems = history.map((country, index) => {
+    return <MenuItem
+     key={`${country}-${index}`} 
+     value={country} >
+
+      {country.charAt(0).toUpperCase() + country.slice(1,country.length)}
+     </MenuItem>
+  })
 
 
   return (
@@ -83,58 +112,32 @@ function App() {
       <main className='main'>
         <h2 className='title'>Weather Application</h2>
 
+       
         
-
-        <div className='autocomplete'>
-
         
-        <Autocomplete
-          onSelect={onChange}
-          disablePortal
-          id="combo-box-demo"
-          options={countries}
-          sx={{ width: 300 }}
-          renderInput={(params) => <TextField onChange={onChange} className='search' id='standard-basic' label="Search Country" variant='standard'  {...params}  />                   
+        {weatherData &&  <History 
+        selectedCountry = {selectedCountry} 
+        onHistoryChange = {onHistoryChange}
+        menuItems = {menuItems}
+        clearHistory = {clearHistory} 
+        />
         }
-          />
 
-          <InputAdornment onClick={onSubmit} position="start">
-              <SearchOutlinedIcon className='searchIcon' sx={{color: 'white', fontSize:'32px', cursor: 'pointer' } }/>
-          </InputAdornment>
 
-          </div>
+        {weatherData && 
+        <AutocompleteContainer 
+        onChange = {onChange} 
+        countries = {countries}
+        onSubmit = {onSubmit}
+        />
+        }
 
-        <div className='info-container'>
-          <img src={weatherData.current.condition.icon} width={'200px'} height={'200px'}  alt='' />
-          <div className='weather-temp'>{weatherData.current.temp_c}°C</div>
-          <div className='weather-location'>{weatherData.location.name}</div>
-        </div>
-          
-          <div className='data-container'>
 
-            <div className='element-container'>
+{weatherData && <Info weatherData = {weatherData} />}
 
-              <div className='element'>
-                  <img width={'60px'} src="https://cdn-icons-png.flaticon.com/512/6393/6393411.png" alt='' className='icon' />
-                  <div className='data'>
-                    <div className='humidity-percent'>{weatherData.current.humidity}%</div>
-                    <div className='text'>Humidity</div>
-                </div>
-              </div>
 
-              <div className='element'>
-                  <img width={'60px'}   src="https://cdn-icons-png.flaticon.com/512/3944/3944594.png" alt='' className='icon' />
-                  <div className='data'>
-                    <div className='humidity-percent'>{weatherData.current.gust_kph}km/h</div>
-                    <div className='text'>Wind Speed</div>
-                </div>
-              </div>
+{weatherData && <Data weatherData = {weatherData} /> }
 
-            </div>
-            
-
-          </div>
-          
 
       </main>
      
