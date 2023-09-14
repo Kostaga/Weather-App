@@ -1,7 +1,7 @@
 # Weather-App
 A simple weather application made using the Weather API and Material UI with React
 
-This is a simple full stack web application thatuses React, Node.js, Express, and PostgreSQL. The user can select or type any country and the Weather API provides data about that country. Users can also see their history, select countries and clear the history.
+This is a simple full stack web application that uses React, Node.js, Express, and PostgreSQL. The user can select or type any country and the Weather API provides data about that country. Users can also see their history, select countries and clear the history.
 
 Link: [https://benevolent-profiterole-c442fc.netlify.app](https://benevolent-profiterole-c442fc.netlify.app)
 
